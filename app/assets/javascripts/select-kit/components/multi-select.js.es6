@@ -7,6 +7,7 @@ export default SelectKitComponent.extend({
   pluginApiIdentifiers: ["multi-select"],
   layoutName: "select-kit/templates/components/multi-select",
   classNames: ["multi-select"],
+  multiSelect: true,
 
   selectKitOptions: {
     none: "select_kit.default_header_text",

@@ -738,7 +738,7 @@ export default Component.extend(
     },
 
     _onCloseWrapper(event) {
-      this._focusFilter();
+      this._focusFilter(this.multiSelect);
 
       this.set("selectKit.highlighted", null);
 
@@ -861,14 +861,14 @@ export default Component.extend(
       });
     },
 
-    _focusFilter() {
+    _focusFilter(forceHeader = false) {
       this._safeAfterRender(() => {
         const input = this.getFilterInput();
-        if (input) {
-          input.focus();
+        if (!forceHeader && input) {
+          input.focus({ preventScroll: true });
         } else {
           const headerContainer = this.getHeader();
-          headerContainer && headerContainer.focus();
+          headerContainer && headerContainer.focus({ preventScroll: true });
         }
       });
     },

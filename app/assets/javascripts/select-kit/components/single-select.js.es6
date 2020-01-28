@@ -6,6 +6,7 @@ export default SelectKitComponent.extend({
   pluginApiIdentifiers: ["single-select"],
   layoutName: "select-kit/templates/components/single-select",
   classNames: ["single-select"],
+  singleSelect: true,
 
   selectKitOptions: {
     headerComponent: "select-kit/single-select-header"
