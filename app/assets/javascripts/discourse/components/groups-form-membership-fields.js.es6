@@ -1,5 +1,6 @@
 import discourseComputed from "discourse-common/utils/decorators";
 import Component from "@ember/component";
+import { computed } from "@ember/object";
 
 export default Component.extend({
   tokenSeparator: "|",
@@ -18,6 +19,17 @@ export default Component.extend({
       { name: 4, value: 4 }
     ];
   },
+
+  groupTrustLevel: computed(
+    "model.grant_trust_level",
+    "trustLevelOptions",
+    function() {
+      return (
+        this.model.get("grant_trust_level") ||
+        this.trustLevelOptions.firstObject.value
+      );
+    }
+  ),
 
   @discourseComputed("model.visibility_level", "model.public_admission")
   disableMembershipRequestSetting(visibility_level, publicAdmission) {
