@@ -24,6 +24,12 @@ export default DropdownSelectBoxComponent.extend({
     }
   },
 
+  modifyComponentForCollection(collection) {
+    if (collection === HEADING_COLLECTION) {
+      return "toolbar-popup-menu-options/toolbar-popup-menu-options-heading";
+    }
+  },
+
   modifyContent(contents) {
     return contents
       .map(content => {
