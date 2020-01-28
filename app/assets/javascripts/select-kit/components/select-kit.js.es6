@@ -616,7 +616,10 @@ export default Component.extend(
         this.set("mainCollection", content);
 
         this.selectKit.setProperties({
-          highlighted: this.mainCollection.firstObject,
+          highlighted:
+            this.singleSelect && this.value
+              ? this.itemForValue(this.value)
+              : this.mainCollection.firstObject,
           isLoading: false,
           hasNoContent
         });

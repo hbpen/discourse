@@ -13,6 +13,14 @@ export default Mixin.create({
     }
   },
 
+  itemForValue(value) {
+    if (this.selectKit.valueProperty) {
+      return this.mainCollection.findBy(this.selectKit.valueProperty, value);
+    } else {
+      return value;
+    }
+  },
+
   getProperty(item, property, options = { definedOnly: true }) {
     const { definedOnly } = options;
 
