@@ -804,9 +804,16 @@ export default Component.extend(
           popper.style.minWidth = `${anchor.offsetWidth}px`;
         }
 
+        const inModal = $(this.element).parents("#discourse-modal").length;
+
+        if (!this.site.mobileView && inModal) {
+          popper.style.width = `${anchor.offsetWidth}px`;
+        }
+
         /* global Popper:true */
         this.popper = Popper.createPopper(anchor, popper, {
           eventsEnabled: false,
+          strategy: inModal ? "fixed" : "absolute",
           placement: this.selectKit.options.placement,
           modifiers: [
             {
