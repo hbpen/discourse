@@ -587,13 +587,14 @@ export default Component.extend(
 
       return Promise.resolve(this.search(filter)).then(result => {
         content = content.concat(makeArray(result));
-        content = this.selectKit.modifyContent(content).filter(Boolean);
 
         if (this.selectKit.valueProperty) {
           content = content.uniqBy(this.selectKit.valueProperty);
         } else {
           content = content.uniq();
         }
+
+        content = this.selectKit.modifyContent(content).filter(Boolean);
 
         if (this.selectKit.options.limitMatches) {
           content = content.slice(0, this.selectKit.options.limitMatches);

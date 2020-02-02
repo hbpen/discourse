@@ -19,6 +19,15 @@ function prependContent(pluginApiIdentifiers, contentFunction) {
   _prependContentCallbacks[pluginApiIdentifiers].push(contentFunction);
 }
 
+let _filterContentCallbacks = {};
+function filterContent(pluginApiIdentifiers, contentFunction) {
+  if (isNone(_filterContentCallbacks[pluginApiIdentifiers])) {
+    _filterContentCallbacks[pluginApiIdentifiers] = [];
+  }
+
+  _filterContentCallbacks[pluginApiIdentifiers].push(contentFunction);
+}
+
 let _modifyContentCallbacks = {};
 function modifyContent(pluginApiIdentifiers, contentFunction) {
   if (isNone(_modifyContentCallbacks[pluginApiIdentifiers])) {
@@ -105,6 +114,16 @@ export function applyContentPluginApiCallbacks(
     (_appendContentCallbacks[key] || []).forEach(c => {
       content = content.concat(Ember.makeArray(c(selectKit, content)));
     });
+    const filterCallbacks = _filterContentCallbacks[key] || [];
+    if (filterCallbacks.length) {
+      content = content.filter(c => {
+        let kept = true;
+        filterCallbacks.forEach(cb => {
+          kept = cb(selectKit, c);
+        });
+        return kept;
+      });
+    }
     (_modifyContentCallbacks[key] || []).forEach(c => {
       content = c(selectKit, content);
     });
@@ -204,6 +223,10 @@ export function modifySelectKit(pluginApiIdentifiers) {
       });
       return modifySelectKit(pluginApiIdentifiers);
     },
+    filterContent: filterFunction => {
+      filterContent(pluginApiIdentifiers, filterFunction);
+      return modifySelectKit(pluginApiIdentifiers);
+    },
     modifyContent: callback => {
       modifyContent(pluginApiIdentifiers, callback);
       return modifySelectKit(pluginApiIdentifiers);
@@ -246,6 +269,7 @@ export function modifySelectKit(pluginApiIdentifiers) {
 export function clearCallbacks() {
   _appendContentCallbacks = {};
   _prependContentCallbacks = {};
+  _filterContentCallbacks = {};
   _modifyNoSelectionCallbacks = {};
   _modifyContentCallbacks = {};
   _modifyHeaderComputedContentCallbacks = {};
