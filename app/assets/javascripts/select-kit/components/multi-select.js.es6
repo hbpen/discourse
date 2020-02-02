@@ -55,7 +55,10 @@ export default SelectKitComponent.extend({
         )
       );
     } else {
-      const existingItem = this.findValue(this.mainCollection, item);
+      const existingItem = this.findValue(
+        this.mainCollection,
+        this.selectKit.valueProperty ? item : value
+      );
       if (existingItem) {
         if (!this.validateSelect(item)) {
           return;
@@ -101,10 +104,6 @@ export default SelectKitComponent.extend({
       return this.selectKit.noneItem;
     }
   }),
-
-  validateSelect() {
-    return this._super() && !this.selectKit.hasReachedMaximum;
-  },
 
   _onKeydown(event) {
     if (event.keyCode === 8) {

@@ -4,9 +4,15 @@ import deprecated from "discourse-common/lib/deprecated";
 const { get, isNone, makeArray } = Ember;
 import UtilsMixin from "select-kit/mixins/utils";
 import PluginApiMixin from "select-kit/mixins/plugin-api";
-import { debounce, cancel, throttle, bind, schedule } from "@ember/runloop";
+import {
+  next,
+  debounce,
+  cancel,
+  throttle,
+  bind,
+  schedule
+} from "@ember/runloop";
 import { Promise } from "rsvp";
-import { readOnly } from "@ember/object/computed";
 import {
   applyHeaderContentPluginApiCallbacks,
   applyModifyNoSelectionPluginApiCallbacks,
@@ -289,11 +295,11 @@ export default Component.extend(
       }
     ),
 
-    hasReachedMaximum: readOnly(
+    hasReachedMaximum: computed(
       "selectKit.options.maximum",
       "value",
       function() {
-        const maximum = this.selectKit.options.maximum;
+        const maximum = parseInt(this.selectKit.options.maximum, 10);
 
         if (maximum && makeArray(this.value).length >= maximum) {
           return true;
@@ -303,11 +309,11 @@ export default Component.extend(
       }
     ),
 
-    hasReachedMinimum: readOnly(
+    hasReachedMinimum: computed(
       "selectKit.options.minimum",
       "value",
       function() {
-        const minimum = this.selectKit.options.minimum;
+        const minimum = parseInt(this.selectKit.options.minimum, 10);
 
         if (!minimum || makeArray(this.value).length >= minimum) {
           return true;
@@ -338,6 +344,7 @@ export default Component.extend(
       const selection = Ember.makeArray(this.value);
 
       const maximum = this.selectKit.options.maximum;
+
       if (maximum && selection.length >= maximum) {
         const key =
           this.selectKit.options.maximumLabel ||
@@ -439,6 +446,8 @@ export default Component.extend(
           this.selectKit.set("filter", null);
 
           this._focusFilter();
+
+          this._safeAfterRender(() => this.popper && this.popper.update());
         }
       });
     },
@@ -632,12 +641,14 @@ export default Component.extend(
     },
 
     _safeAfterRender(fn) {
-      schedule("afterRender", () => {
-        if (!this.element || this.isDestroyed || this.isDestroying) {
-          return;
-        }
+      next(() => {
+        schedule("afterRender", () => {
+          if (!this.element || this.isDestroyed || this.isDestroying) {
+            return;
+          }
 
-        fn();
+          fn();
+        });
       });
     },
 
@@ -952,7 +963,11 @@ export default Component.extend(
         rootNone: "options.none",
         rootNoneLabel: "options.none",
         showFullTitle: "options.showFullTitle",
-        title: "options.translatedNone"
+        title: "options.translatedNone",
+        maximum: "options.maximum",
+        minimum: "options.minimum",
+        i18nPostfix: "options.i18nPostfix",
+        i18nPrefix: "options.i18nPrefix"
       };
 
       Object.keys(migrations).forEach(from => {

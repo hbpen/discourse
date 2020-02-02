@@ -128,7 +128,15 @@
           <label>{{i18n "discourse_local_dates.create.form.timezones_title"}}</label>
           <p>{{i18n "discourse_local_dates.create.form.timezones_description"}}</p>
           <div class="controls">
-            {{multi-select class="timezones-input" allowAny=false maximum=5 content=allTimezones value=timezones}}
+            {{multi-select
+              valueProperty=null
+              nameProperty=null
+              class="timezones-input"
+              allowAny=false
+              maximum=5
+              content=allTimezones
+              value=timezones
+            }}
           </div>
         </div>
       </div>
